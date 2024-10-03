@@ -61,4 +61,15 @@ then
     exec /usr/sbin/slurmd -Dvvv
 fi
 
+if [ "$1" = "login" ]
+then
+    echo "---> Starting the MUNGE Authentication service (munged) ..."
+    gosu munge /usr/sbin/munged
+
+    echo "root:${ROOT_PASSWORD}" | chpasswd
+    
+    echo "---> Starting sshd ..."
+    exec /usr/sbin/sshd -D -e
+fi
+
 exec "$@"

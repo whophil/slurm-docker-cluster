@@ -84,6 +84,30 @@ services:
     networks:
       - slurm-network
 
+  login:
+    build:
+      context: .
+      dockerfile: Dockerfile-login
+      args:
+        IMAGE_TAG: ${IMAGE_TAG}
+        ROOT_PASSWORD: ${ROOT_PASSWORD}
+    command: ["login"]
+    hostname: login
+    container_name: login
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+    ports:
+      - "2222:22"
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    networks:
+      - slurm-network
+
 volumes:
   etc_munge:
   etc_slurm:
